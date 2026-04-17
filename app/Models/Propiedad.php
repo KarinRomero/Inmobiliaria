@@ -12,10 +12,14 @@ class Propiedad extends Model
     protected $table = 'propiedades'; // Por las dudas, aunque Laravel lo deduce
 
     protected $fillable = [
-        'titulo',
-        'descripcion', 
+        'nombre_titulo',
+        'tipo',
         'direccion',
         'precio',
+        'descripcion',
+        'estado', 
+        'superficie_m2',
+        'ambientes',
         'responsable_id'
     ];
 
