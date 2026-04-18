@@ -44,7 +44,7 @@
                             <!-- Precio -->
                             <div class="mb-4">
                                 <x-input-label for="precio" value="Precio" />
-                                <x-text-input id="precio" class="block mt-1 w-full" type="number" step="0.01" name="precio" :value="old('precio')" required />
+                                <x-text-input id="precio" class="block mt-1 w-full" type="number" min="1" step="0.01" name="precio" :value="old('precio')" required />
                                 <x-input-error :messages="$errors->get('precio')" class="mt-2" />
                             </div>
 
@@ -62,21 +62,21 @@
                             <!-- Superficie -->
                             <div class="mb-4">
                                 <x-input-label for="superficie_m2" value="Superficie m²" />
-                                <x-text-input id="superficie_m2" class="block mt-1 w-full" type="number" name="superficie_m2" :value="old('superficie_m2')" />
+                                <x-text-input id="superficie_m2" required class="block mt-1 w-full" type="number" min="1" name="superficie_m2" :value="old('superficie_m2')" />
                                 <x-input-error :messages="$errors->get('superficie_m2')" class="mt-2" />
                             </div>
 
                             <!-- Ambientes -->
                             <div class="mb-4">
                                 <x-input-label for="ambientes" value="Ambientes" />
-                                <x-text-input id="ambientes" class="block mt-1 w-full" type="number" name="ambientes" :value="old('ambientes')" />
+                                <x-text-input id="ambientes" required class="block mt-1 w-full" type="number" min="1" name="ambientes" :value="old('ambientes')" />
                                 <x-input-error :messages="$errors->get('ambientes')" class="mt-2" />
                             </div>
 
                             <!-- Descripcion -->
                             <div class="mb-4 md:col-span-2">
                                 <x-input-label for="descripcion" value="Descripción" />
-                                <textarea id="descripcion" name="descripcion" rows="4" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('descripcion') }}</textarea>
+                                <textarea id="descripcion" name="descripcion" required class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('descripcion') }}</textarea>
                                 <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
                             </div>
                         </div>

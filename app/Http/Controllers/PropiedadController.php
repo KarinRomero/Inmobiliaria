@@ -25,11 +25,11 @@ class PropiedadController extends Controller
         'nombre_titulo' => 'required|string|max:255',
         'tipo' => 'required|string|max:255',
         'direccion' => 'required|string|max:255',
-        'precio' => 'required|numeric|min:0',
+        'precio' => 'required|numeric|min:1',
         'estado' => 'required|in:DISPONIBLE,RESERVADA,VENDIDA',
-        'descripcion' => 'nullable|string',
-        'superficie_m2' => 'nullable|integer|min:0',
-        'ambientes' => 'nullable|integer|min:0',
+        'descripcion' => 'required|string',
+        'superficie_m2' => 'required|integer|min:1',
+        'ambientes' => 'required|integer|min:1',
       ]);
 
      Propiedad::create([
@@ -54,16 +54,30 @@ class PropiedadController extends Controller
 
     public function edit(Propiedad $propiedad)
     {
-        //
+       return view('propiedades.edit', compact('propiedad'));
     }
 
     public function update(Request $request, Propiedad $propiedad)
     {
-        //
+      $request->validate([
+        'nombre_titulo' => 'required|string|max:255',
+        'tipo' => 'required|string|max:255',
+        'direccion' => 'required|string|max:255',
+        'precio' => 'required|numeric|min:1',
+        'estado' => 'required|in:DISPONIBLE,RESERVADA,VENDIDA',
+        'descripcion' => 'nullable|string',
+        'superficie_m2' => 'nullable|integer|min:1',
+        'ambientes' => 'nullable|integer|min:1',
+      ]);
+
+      $propiedad->update($request->all());
+
+      return redirect()->route('propiedades.index')->with('success', 'Propiedad actualizada!');
     }
 
     public function destroy(Propiedad $propiedad)
     {
-        //
+       $propiedad->delete();
+       return redirect()->route('propiedades.index')->with('success', 'Propiedad eliminada!');
     }
 }
