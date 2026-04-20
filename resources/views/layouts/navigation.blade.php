@@ -12,9 +12,15 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="url('/propiedades')" :active="request()->is('propiedades*')">
+                        {{ __('Propiedades') }}
                     </x-nav-link>
+
+                    @if(auth()->user()->rol === 'ADMINISTRADOR')
+                        <x-nav-link :href="url('/auditorias')" :active="request()->is('auditorias*')">
+                            {{__('Auditorías') }}
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 

@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('auditorias', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
-            $table->string('accion'); // crear, editar, eliminar
-            $table->string('tabla_afectada');
-            $table->timestamp('fecha_hora');
-            $table->text('valores_anteriores')->nullable();
-            $table->text('valores_nuevos')->nullable();
-            $table->foreign('user_id')->references('id')->on('usuarios');
+            $table->foreignId('user_id')->constrained('usuarios')->onDelete('cascade');
+            $table->string('accion'); // Creación de registro, Actualización de datos, Eliminación de registro
+            $table->string('tabla_afectada'); // propiedades
+            $table->unsignedBigInteger('registro_id'); // ID de la propiedad afectada
+            $table->text('descripcion'); // Resumen legible del cambio
+            $table->json('valores_anteriores')->nullable();
+            $table->json('valores_nuevos')->nullable();
             $table->timestamps();
         });
     }
