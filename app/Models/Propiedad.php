@@ -25,6 +25,10 @@ class Propiedad extends Model
 
     public function responsable()
     {
-        return $this->belongsTo(User::class, 'responsable_id');
+        return $this->belongsTo(Usuario::class, 'responsable_id');
+    }
+    public function imagenes()
+    {
+        return $this->hasMany(Imagen::class, 'propiedad_id');
     }
 }

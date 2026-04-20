@@ -26,10 +26,11 @@
                                 <x-input-label for="tipo" value="Tipo" />
                                 <select id="tipo" name="tipo" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" required>
                                     <option value="">Seleccionar...</option>
-                                    <option value="casa" {{ old('tipo') == 'casa' ? 'selected' : '' }}>Casa</option>
-                                    <option value="depto" {{ old('tipo') == 'depto' ? 'selected' : '' }}>Departamento</option>
-                                    <option value="terreno" {{ old('tipo') == 'terreno' ? 'selected' : '' }}>Terreno</option>
-                                    <option value="local" {{ old('tipo') == 'local' ? 'selected' : '' }}>Local</option>
+                                    <option value="casa" @selected(old('tipo') == 'casa' )>Casa</option>
+                                    <option value="depto" @selected(old('tipo') == 'depto' )>Departamento</option>
+                                    <option value="terreno" @selected(old('tipo') == 'terreno' )>Terreno</option>
+                                    <option value="local" @selected(old('tipo') == 'local' )>Local</option>
+                                    <option value="galpon" @selected(old('tipo') == 'galpon' )>Galpon</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('tipo')" class="mt-2" />
                             </div>
@@ -44,7 +45,7 @@
                             <!-- Precio -->
                             <div class="mb-4">
                                 <x-input-label for="precio" value="Precio" />
-                                <x-text-input id="precio" class="block mt-1 w-full" type="number" step="0.01" name="precio" :value="old('precio')" required />
+                                <x-text-input id="precio" class="block mt-1 w-full" type="number" min="1" step="0.01" name="precio" :value="old('precio')" required />
                                 <x-input-error :messages="$errors->get('precio')" class="mt-2" />
                             </div>
 
@@ -62,24 +63,53 @@
                             <!-- Superficie -->
                             <div class="mb-4">
                                 <x-input-label for="superficie_m2" value="Superficie m²" />
-                                <x-text-input id="superficie_m2" class="block mt-1 w-full" type="number" name="superficie_m2" :value="old('superficie_m2')" />
+                                <x-text-input id="superficie_m2" required class="block mt-1 w-full" type="number" min="1" name="superficie_m2" :value="old('superficie_m2')" />
                                 <x-input-error :messages="$errors->get('superficie_m2')" class="mt-2" />
                             </div>
 
                             <!-- Ambientes -->
                             <div class="mb-4">
                                 <x-input-label for="ambientes" value="Ambientes" />
-                                <x-text-input id="ambientes" class="block mt-1 w-full" type="number" name="ambientes" :value="old('ambientes')" />
+                                <x-text-input id="ambientes" required class="block mt-1 w-full" type="number" min="1" name="ambientes" :value="old('ambientes')" />
                                 <x-input-error :messages="$errors->get('ambientes')" class="mt-2" />
                             </div>
 
                             <!-- Descripcion -->
                             <div class="mb-4 md:col-span-2">
                                 <x-input-label for="descripcion" value="Descripción" />
-                                <textarea id="descripcion" name="descripcion" rows="4" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('descripcion') }}</textarea>
+                                <textarea id="descripcion" name="descripcion" required class="block mt-1 w-full border-gray-300 rounded-md shadow-sm">{{ old('descripcion') }}</textarea>
                                 <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
                             </div>
                         </div>
+
+                            <!-- Responsable -->
+                            <div class="mb-4">
+                                <x-input-label for="responsable_id" value="Responsable" />
+                                <select id="responsable_id" name="responsable_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                  <option value="">Seleccionar responsable</option>
+                                  @foreach($usuarios as $usuario)
+                                    <option value="{{ $usuario->id }}" @selected(old('responsable_id') == $usuario->id)>
+                                        {{ $usuario->nombre }}
+                                    </option>
+                                  @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('responsable_id')" class="mt-2" />
+                            </div>
+
+                            <!-- Imagen URL - Simple por ahora -->
+                            <div class="mb-4">
+                                 <x-input-label for="imagen" value="URL de Imagen" />
+                                 <x-text-input
+                                    id="imagen"
+                                    name="imagenes[]"
+                                    type="url"
+                                    class="mt-1 block w-full"
+                                    :value="old('imagenes.0')"
+                                    placeholder="https://ejemplo.com/foto.jpg"
+                                   />
+                                 <x-input-error :messages="$errors->get('imagenes.0')" class="mt-2" />
+                            </div>
+
 
                         <div class="flex items-center justify-end mt-4">
                             <a href="{{ route('propiedades.index') }}" class="mr-4 text-gray-600">Cancelar</a>
