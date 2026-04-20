@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PropiedadController; 
+use App\Http\Controllers\PropiedadController;
+use App\Http\Controllers\AuditoriaController; // <-- Línea agregada
 use Illuminate\Support\Facades\Route;
+
+Route::redirect('/dashoboard', '/propiedades')->name('dashboard');
 
 Route::get('/', function () {
     return view('welcome');
@@ -25,6 +28,11 @@ Route::middleware('auth')->group(function () {
     // Destroy solo para ADMINISTRADOR
     Route::delete('propiedades/{propiedad}', [PropiedadController::class, 'destroy'])
         ->name('propiedades.destroy')
+        ->middleware('admin');
+
+    // Auditorías solo para ADMINISTRADOR <-- Bloque agregado
+    Route::get('/auditorias', [AuditoriaController::class, 'index'])
+        ->name('auditorias.index')
         ->middleware('admin');
 });
 
