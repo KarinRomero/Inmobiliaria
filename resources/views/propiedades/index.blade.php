@@ -40,6 +40,7 @@
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tipo</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Precio</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Estado</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Responsable</th>
                                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Acciones</th>
                                 </tr>
                             </thead>
@@ -50,18 +51,28 @@
                                         <td class="px-6 py-4">{{ ucfirst($propiedad->tipo) }}</td>
                                         <td class="px-6 py-4">${{ number_format($propiedad->precio, 2, ',', '.') }}</td>
                                         <td class="px-6 py-4">{{ $propiedad->estado }}</td>
+                                        <td class="px-6 py-4">{{ $propiedad->responsable->nombre }}</td>
                                         <td class="px-6 py-4 flex gap-2">
                                             <a href="{{ route('propiedades.edit', $propiedad) }}">
                                                 <x-secondary-button>Editar</x-secondary-button>
                                             </a>
     
                                             <!-- Botón que abre el modal -->
+
+                                            @if(auth()->user()->rol=== 'ADMINISTRADOR')
+                                            <form action="{{ route('propiedades.destroy',$propiedad) }}"method="POST" class="inline">
+                                                @csrf
+                                                @method('DELETE')
                                             <x-danger-button 
                                                 x-data=""
                                                 x-on:click.prevent="$dispatch('open-modal', 'confirm-propiedad-{{ $propiedad->id }}')"
                                             >
-                                                 Borrar
+                                                Borrar
                                             </x-danger-button>
+                                            </form>
+                                            @endif
+
+
 
                                             <!-- Modal de confirmación -->
                                             <x-modal name="confirm-propiedad-{{ $propiedad->id }}" focusable>

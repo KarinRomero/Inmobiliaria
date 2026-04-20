@@ -21,7 +21,6 @@
                         </div>
 
                         <!-- Tipo -->
-                        <!-- Tipo -->
                         <div class="mb-4">
                             <x-input-label for="tipo" value="Tipo" />
                             <select id="tipo" name="tipo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
@@ -29,6 +28,7 @@
                                <option value="Departamento" @selected(old('tipo', $propiedad->tipo) == 'Departamento')>Departamento</option>
                                <option value="Terreno" @selected(old('tipo', $propiedad->tipo) == 'Terreno')>Terreno</option>
                                <option value="Local" @selected(old('tipo', $propiedad->tipo) == 'Local')>Local</option>
+                               <option value="Galpón" @selected(old('tipo', $propiedad->tipo) == 'Galpón')>Galpón</option>
                             </select>
                             <x-input-error :messages="$errors->get('tipo')" class="mt-2" />
                         </div>
@@ -40,12 +40,21 @@
                             <x-input-error :messages="$errors->get('direccion')" class="mt-2" />
                         </div>
 
-                        <!-- Precio -->
+                        <!-- Precio: solo si es administrador -->
+                        @if(auth()->user()->rol === 'ADMINISTRADOR')
+                           <div class="mb-4">
+                               <x-input-label for="precio" value="Precio" />
+                               <x-text-input id="precio" class="block mt-1 w-full" type="number" min="1" step="0.01" name="precio" :value="old('precio', $propiedad->precio)" required />
+                               <x-input-error :messages="$errors->get('precio')" class="mt-2" />
+                           </div>
+                        @else
+                        <!-- Para que el usuario vea el precio pero no lo pueda editar -->
                         <div class="mb-4">
-                            <x-input-label for="precio" value="Precio" />
-                            <x-text-input id="precio" name="precio" type="number" min="1" step="0.01" class="mt-1 block w-full" value="{{ old('precio', $propiedad->precio) }}" required />
-                            <x-input-error :messages="$errors->get('precio')" class="mt-2" />
+                           <x-input-label for="precio" value="Precio" />
+                           <x-text-input id="precio" class="block mt-1 w-full bg-gray-100" type="text" :value="'$' . number_format($propiedad->precio, 2, ',', '.')" disabled />
+                           <p class="text-sm text-gray-600 mt-1">Solo administradores pueden modificar el precio.</p>
                         </div>
+                        @endif
 
                         <!-- Estado -->
                         <div class="mb-4">
@@ -78,6 +87,21 @@
                             <x-text-input id="ambientes" name="ambientes" type="number" min="1" required class="mt-1 block w-full" value="{{ old('ambientes', $propiedad->ambientes) }}" />
                             <x-input-error :messages="$errors->get('ambientes')" class="mt-2" />
                         </div>
+
+                        <!-- Responsable -->
+                        <div class="mb-4">
+                            <x-input-label for="responsable_id" value="Responsable" />
+                            <select id="responsable_id" name="responsable_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                @foreach(\App\Models\Usuario::all() as $usuario)
+                                <option value="{{ $usuario->id }}" @selected(old('responsable_id',$propiedad->responsable_id) ==$usuario->id)>
+                                    {{ $usuario->nombre }}
+                                </potion>
+                                @endforeach
+                            </select>
+                            <x-input-error :messages="$errors->get('responsable_id')" class="mt-2" />
+                        </div>             
+
+
 
                         <div class="flex items-center gap-4 mt-6">
                             <x-primary-button>Actualizar</x-primary-button>

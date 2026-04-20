@@ -26,10 +26,11 @@
                                 <x-input-label for="tipo" value="Tipo" />
                                 <select id="tipo" name="tipo" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" required>
                                     <option value="">Seleccionar...</option>
-                                    <option value="casa" {{ old('tipo') == 'casa' ? 'selected' : '' }}>Casa</option>
-                                    <option value="depto" {{ old('tipo') == 'depto' ? 'selected' : '' }}>Departamento</option>
-                                    <option value="terreno" {{ old('tipo') == 'terreno' ? 'selected' : '' }}>Terreno</option>
-                                    <option value="local" {{ old('tipo') == 'local' ? 'selected' : '' }}>Local</option>
+                                    <option value="casa" @selected(old('tipo') == 'casa' )>Casa</option>
+                                    <option value="depto" @selected(old('tipo') == 'depto' )>Departamento</option>
+                                    <option value="terreno" @selected(old('tipo') == 'terreno' )>Terreno</option>
+                                    <option value="local" @selected(old('tipo') == 'local' )>Local</option>
+                                    <option value="galpon" @selected(old('tipo') == 'galpon' )>Galpon</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('tipo')" class="mt-2" />
                             </div>
@@ -80,6 +81,35 @@
                                 <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
                             </div>
                         </div>
+
+                            <!-- Responsable -->
+                            <div class="mb-4">
+                                <x-input-label for="responsable_id" value="Responsable" />
+                                <select id="responsable_id" name="responsable_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
+                                  <option value="">Seleccionar responsable</option>
+                                  @foreach($usuarios as $usuario)
+                                    <option value="{{ $usuario->id }}" @selected(old('responsable_id') == $usuario->id)>
+                                        {{ $usuario->nombre }}
+                                    </option>
+                                  @endforeach
+                                </select>
+                                <x-input-error :messages="$errors->get('responsable_id')" class="mt-2" />
+                            </div>
+
+                            <!-- Imagen URL - Simple por ahora -->
+                            <div class="mb-4">
+                                 <x-input-label for="imagen" value="URL de Imagen" />
+                                 <x-text-input
+                                    id="imagen"
+                                    name="imagenes[]"
+                                    type="url"
+                                    class="mt-1 block w-full"
+                                    :value="old('imagenes.0')"
+                                    placeholder="https://ejemplo.com/foto.jpg"
+                                   />
+                                 <x-input-error :messages="$errors->get('imagenes.0')" class="mt-2" />
+                            </div>
+
 
                         <div class="flex items-center justify-end mt-4">
                             <a href="{{ route('propiedades.index') }}" class="mr-4 text-gray-600">Cancelar</a>
