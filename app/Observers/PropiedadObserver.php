@@ -4,6 +4,9 @@ namespace App\Observers;
 
 use App\Models\Propiedad;
 use App\Models\Auditoria;
+use App\Mail\PropiedadCreadaMail;
+use Illuminate\Support\Facades\Mail;
+
 
 class PropiedadObserver
 {
@@ -18,6 +21,9 @@ class PropiedadObserver
             'valores_anteriores' => null,
             'valores_nuevos' => $propiedad->toArray(),
         ]);
+
+        //Envia Mail
+        Mail::to('karinroom91@gmail.com')->send(new PropiedadCreadaMail($propiedad));
     }
 
     public function updated(Propiedad $propiedad): void
