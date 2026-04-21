@@ -61,6 +61,14 @@
                     </div>
 
                     <div class="mt-4">
+                        <dt class="text-sm text-gray-500">Responsable</dt>
+                        <dd class="mt-1 text-sm text-gray-900 font-semibold">
+                            {{ $propiedad->responsable->nombre ?? 'Sin asignar' }}
+                        </dd>
+                   </div>
+
+
+                    <div class="mt-4">
                         <p class="text-sm text-gray-500">Descripción</p>
                         <p class="text-gray-700">{{ $propiedad->descripcion ?? 'Sin descripción' }}</p>
                     </div>

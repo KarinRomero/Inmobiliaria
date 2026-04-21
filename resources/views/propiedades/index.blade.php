@@ -42,6 +42,86 @@
             @endif
 
 
+            <div class="bg-white rounded-lg shadow p-4 mb-6" x-data="{ openPrecio: false }">
+                <form method="GET" action="{{ route('propiedades.index') }}" class="grid grid-cols-12 gap-3">
+        
+                <!--  Buscador -->
+                   <div class="col-span-12 md:col-span-4">
+                       <input type="text" name="buscar" value="{{ request('buscar') }}" 
+                              placeholder="Buscar por título o dirección..."
+                              class="w-full border-gray-300 rounded-md shadow-sm">
+                   </div>
+
+                   <!-- Estado -->
+                   <div class="col-span-6 md:col-span-3">
+
+                       <select name="estado" class="w-full border-gray-300 rounded-md shadow-sm">
+                           <option value="">Todos los estados</option>
+                           <option value="DISPONIBLE" @selected(request('estado') == 'DISPONIBLE')>Disponible</option>
+                           <option value="RESERVADA" @selected(request('estado') == 'RESERVADA')>Reservada</option>
+                           <option value="VENDIDA" @selected(request('estado') == 'VENDIDA')>Vendida</option>
+                       </select>
+                   </div>
+
+                   <!-- Tipo -->
+                   <div class="col-span-6 md:col-span-3">
+                        <select name="tipo" class="w-full border-gray-300 rounded-md shadow-sm">
+                             <option value="">Todos los tipos</option>
+                             <option value="CASA" @selected(request('tipo') == 'CASA')>Casa</option>
+                             <option value="DEPARTAMENTO" @selected(request('tipo') == 'DEPARTAMENTO')>Departamento</option>
+                             <option value="TERRENO" @selected(request('tipo') == 'TERRENO')>Terreno</option>
+                        </select>
+                    </div>
+
+                    <!-- Precio con dropdown -->
+                      <div class="col-span-12 md:col-span-2 relative">
+            <button type="button" @click="openPrecio =!openPrecio"
+                    class="w-full px-4 py-2.5 border border-gray-300 rounded-md shadow-sm bg-white hover:bg-gray-50 flex items-center justify-between">
+                <span>Precio</span>
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                </svg>
+            </button>
+
+            <!-- Dropdown de precio -->
+            <div x-show="openPrecio" @click.away="openPrecio = false" x-cloak
+                 class="absolute z-10 mt-2 w-72 right-0 bg-white rounded-md shadow-lg p-4 border">
+                <div class="grid grid-cols-2 gap-3 mb-3">
+                    <div>
+                        <label class="text-xs text-gray-600">Desde</label>
+                        <input type="number" name="precio_desde" value="{{ request('precio_desde') }}"
+                               placeholder="0"
+                               class="w-full border-gray-300 rounded-md shadow-sm text-sm mt-1">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-600">Hasta</label>
+                        <input type="number" name="precio_hasta" value="{{ request('precio_hasta') }}"
+                               placeholder="0"
+                               class="w-full border-gray-300 rounded-md shadow-sm text-sm mt-1">
+                    </div>
+                </div>
+                <button type="submit" class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
+                    Aplicar filtro
+                </button>
+            </div>
+        </div>
+
+        <!-- Botón limpiar si hay filtros -->
+           @if(request()->anyFilled(['buscar', 'tipo', 'estado', 'precio_desde', 'precio_hasta']))
+        <div class="flex justify-end mt-3">
+            <a href="{{ route('propiedades.index') }}"
+               class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm">
+                Limpiar filtros
+            </a>
+        </div>
+    @endif
+
+    </form>
+</div>
+.
+
+
+
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 @forelse ($propiedades as $propiedad)
                     <div class="bg-white overflow-hidden shadow-sm rounded-lg hover:shadow-lg transition">
