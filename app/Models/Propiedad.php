@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Imagen;
 
 class Propiedad extends Model
 {
@@ -29,6 +30,10 @@ class Propiedad extends Model
     }
     public function imagenes()
     {
-        return $this->hasMany(Imagen::class, 'propiedad_id');
+        return $this->hasMany(Imagen::class);
+    }
+    public function imagenPrincipal()
+    {
+        return $this->hasOne(Imagen::class)->oldestOfMany(); //trae la primera
     }
 }

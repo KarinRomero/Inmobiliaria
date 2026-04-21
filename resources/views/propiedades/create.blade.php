@@ -10,7 +10,7 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     
-                    <form method="POST" action="{{ route('propiedades.store') }}">
+                    <form method="POST" action="{{ route('propiedades.store') }}" enctype="multipart/form-data">
                         @csrf
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -26,11 +26,11 @@
                                 <x-input-label for="tipo" value="Tipo" />
                                 <select id="tipo" name="tipo" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" required>
                                     <option value="">Seleccionar...</option>
-                                    <option value="casa" @selected(old('tipo') == 'casa' )>Casa</option>
-                                    <option value="depto" @selected(old('tipo') == 'depto' )>Departamento</option>
-                                    <option value="terreno" @selected(old('tipo') == 'terreno' )>Terreno</option>
-                                    <option value="local" @selected(old('tipo') == 'local' )>Local</option>
-                                    <option value="galpon" @selected(old('tipo') == 'galpon' )>Galpon</option>
+                                    <option value="Casa" @selected(old('Tipo') == 'Casa' )>Casa</option>
+                                    <option value="Departamento" @selected(old('tipo') == 'Departamento' )>Departamento</option>
+                                    <option value="Terreno" @selected(old('tipo') == 'Terreno' )>Terreno</option>
+                                    <option value="Local" @selected(old('tipo') == 'Local' )>Local</option>
+                                    <option value="Galpón" @selected(old('tipo') == 'Galpón' )>Galpón</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('tipo')" class="mt-2" />
                             </div>
@@ -53,9 +53,9 @@
                             <div class="mb-4">
                                 <x-input-label for="estado" value="Estado" />
                                 <select id="estado" name="estado" class="block mt-1 w-full border-gray-300 rounded-md shadow-sm" required>
-                                    <option value="DISPONIBLE" {{ old('estado') == 'DISPONIBLE' ? 'selected' : '' }}>Disponible</option>
-                                    <option value="RESERVADA" {{ old('estado') == 'RESERVADA' ? 'selected' : '' }}>Reservada</option>
-                                    <option value="VENDIDA" {{ old('estado') == 'VENDIDA' ? 'selected' : '' }}>Vendida</option>
+                                    <option value="DISPONIBLE" @selected(old( 'estado' ) == 'DISPONIBLE' )>Disponible</option>
+                                    <option value="RESERVADA" @selected(old( 'estado' ) == 'RESERVADA' )>Reservada</option>
+                                    <option value="VENDIDA" @selected(old('estado' ) == 'VENDIDA')>Vendida</option>
                                 </select>
                                 <x-input-error :messages="$errors->get('estado')" class="mt-2" />
                             </div>
@@ -70,7 +70,7 @@
                             <!-- Ambientes -->
                             <div class="mb-4">
                                 <x-input-label for="ambientes" value="Ambientes" />
-                                <x-text-input id="ambientes" required class="block mt-1 w-full" type="number" min="1" name="ambientes" :value="old('ambientes')" />
+                                <x-text-input id="ambientes" required class="block mt-1 w-full" type="number" min="0" name="ambientes" :value="old('ambientes')" />
                                 <x-input-error :messages="$errors->get('ambientes')" class="mt-2" />
                             </div>
 
@@ -96,18 +96,21 @@
                                 <x-input-error :messages="$errors->get('responsable_id')" class="mt-2" />
                             </div>
 
-                            <!-- Imagen URL - Simple por ahora -->
+                            <!-- Imagenes - Subida de archivos multiple -->
                             <div class="mb-4">
-                                 <x-input-label for="imagen" value="URL de Imagen" />
-                                 <x-text-input
-                                    id="imagen"
-                                    name="imagenes[]"
-                                    type="url"
-                                    class="mt-1 block w-full"
-                                    :value="old('imagenes.0')"
-                                    placeholder="https://ejemplo.com/foto.jpg"
-                                   />
-                                 <x-input-error :messages="$errors->get('imagenes.0')" class="mt-2" />
+                               <x-input-label for="imagenes" value="Imágenes de la propiedad *" />
+                                 <input 
+                                     id="imagenes"
+                                     name="imagenes[]" 
+                                     type="file"
+                                     multiple
+                                     required
+                                     accept="image/jpeg,image/png,image/jpg,image/webp,image/avif"
+                                     class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-800 file:text-white hover:file:bg-gray-700"
+                                 />
+                               <x-input-error :messages="$errors->get('imagenes')" class="mt-2" />
+                               <x-input-error :messages="$errors->get('imagenes.*')" class="mt-2" />
+                               <p class="text-xs text-gray-500 mt-1">Subí mínimo 1 foto. La primera será la portada. Máx 4MB c/u.</p>
                             </div>
 
 

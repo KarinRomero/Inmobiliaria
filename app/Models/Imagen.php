@@ -8,11 +8,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Imagen extends Model
 {
-    use HasFactory;
+   
 
     /**
      * El nombre de la tabla asociada al modelo.
-     * Laravel buscaría "imagens" por defecto, por eso lo forzamos.
      */
     protected $table = 'imagenes';
 
@@ -27,8 +26,8 @@ class Imagen extends Model
     /**
      * Relación: Una imagen pertenece a una propiedad.
      */
-    public function propiedad(): BelongsTo
+    public function propiedad()
     {
-        return $this->belongsTo(Propiedad::class, 'propiedad_id');
+        return $this->belongsTo(Propiedad::class);
     }
 }
