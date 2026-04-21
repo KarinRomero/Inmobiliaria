@@ -70,6 +70,8 @@
                              <option value="CASA" @selected(request('tipo') == 'CASA')>Casa</option>
                              <option value="DEPARTAMENTO" @selected(request('tipo') == 'DEPARTAMENTO')>Departamento</option>
                              <option value="TERRENO" @selected(request('tipo') == 'TERRENO')>Terreno</option>
+                             <option value="LOCAL" @selected(request('tipo') == 'LOCAL')>Local</option>
+                             <option value="GALPÓN" @selected(request('tipo') == 'GALPÓN')>Galpón</option>
                         </select>
                     </div>
 
@@ -105,12 +107,18 @@
                 </button>
             </div>
         </div>
-
+        <!-- Botón aplicar filtro fuera del dropdown -->
+        <div class="col-span-12 md:col-span-2 flex items-end">
+              <button type="submit" 
+                     class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 text-sm">
+                    Aplicar filtro
+             </button>
+        </div>
         <!-- Botón limpiar si hay filtros -->
            @if(request()->anyFilled(['buscar', 'tipo', 'estado', 'precio_desde', 'precio_hasta']))
-        <div class="flex justify-end mt-3">
+        <div class="col-span-12 md:col-span-2 flex items-end">
             <a href="{{ route('propiedades.index') }}"
-               class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm">
+               class="w-full px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 text-sm">
                 Limpiar filtros
             </a>
         </div>
@@ -118,7 +126,9 @@
 
     </form>
 </div>
-.
+
+
+
 
 
 

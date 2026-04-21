@@ -21,6 +21,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     // Recurso completo menos destroy: ADMINISTRADOR y OPERARIO pueden usar todo
+
     Route::resource('propiedades', PropiedadController::class)
         ->parameters(['propiedades' => 'propiedad'])
         ->except(['destroy']);
