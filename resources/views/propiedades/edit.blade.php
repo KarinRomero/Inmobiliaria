@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Editar Propiedad
+            Editar Propiedad: {{ $propiedad->nombre_titulo }}
         </h2>
     </x-slot>
 
@@ -9,14 +9,15 @@
         <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <form method="POST" action="{{ route('propiedades.update', ['propiedad' => $propiedad]) }}">
+                    {{-- Importante: enctype para subir archivos --}}
+                    <form method="POST" action="{{ route('propiedades.update', $propiedad) }}" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
                         
                         <!-- Título -->
                         <div class="mb-4">
                             <x-input-label for="nombre_titulo" value="Título" />
-                            <x-text-input id="nombre_titulo" name="nombre_titulo" type="text" class="mt-1 block w-full" value="{{ old('nombre_titulo', $propiedad->nombre_titulo) }}" required />
+                            <x-text-input id="nombre_titulo" name="nombre_titulo" type="text" class="mt-1 block w-full" :value="old('nombre_titulo', $propiedad->nombre_titulo)" required />
                             <x-input-error :messages="$errors->get('nombre_titulo')" class="mt-2" />
                         </div>
 
@@ -36,7 +37,7 @@
                         <!-- Dirección -->
                         <div class="mb-4">
                             <x-input-label for="direccion" value="Dirección" />
-                            <x-text-input id="direccion" name="direccion" type="text" class="mt-1 block w-full" value="{{ old('direccion', $propiedad->direccion) }}" required />
+                            <x-text-input id="direccion" name="direccion" type="text" class="mt-1 block w-full" :value="old('direccion', $propiedad->direccion)" required />
                             <x-input-error :messages="$errors->get('direccion')" class="mt-2" />
                         </div>
 
@@ -44,11 +45,10 @@
                         @if(auth()->user()->rol === 'ADMINISTRADOR')
                            <div class="mb-4">
                                <x-input-label for="precio" value="Precio" />
-                               <x-text-input id="precio" class="block mt-1 w-full" type="number" min="1" step="0.01" name="precio" :value="old('precio', $propiedad->precio)" required />
+                               <x-text-input id="precio" class="block mt-1 w-full" type="number" min="0" step="0.01" name="precio" :value="old('precio', $propiedad->precio)" required />
                                <x-input-error :messages="$errors->get('precio')" class="mt-2" />
                            </div>
                         @else
-                        <!-- Para que el usuario vea el precio pero no lo pueda editar -->
                         <div class="mb-4">
                            <x-input-label for="precio" value="Precio" />
                            <x-text-input id="precio" class="block mt-1 w-full bg-gray-100" type="text" :value="'$' . number_format($propiedad->precio, 2, ',', '.')" disabled />
@@ -70,21 +70,21 @@
                         <!-- Descripción -->
                         <div class="mb-4">
                             <x-input-label for="descripcion" value="Descripción" />
-                            <textarea id="descripcion" name="descripcion" required class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">{{ old('descripcion', $propiedad->descripcion) }}</textarea>
+                            <textarea id="descripcion" name="descripcion" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm">{{ old('descripcion', $propiedad->descripcion) }}</textarea>
                             <x-input-error :messages="$errors->get('descripcion')" class="mt-2" />
                         </div>
 
                         <!-- Superficie -->
                         <div class="mb-4">
                             <x-input-label for="superficie_m2" value="Superficie m2" />
-                            <x-text-input id="superficie_m2" name="superficie_m2" type="number" min="1" required class="mt-1 block w-full" value="{{ old('superficie_m2', $propiedad->superficie_m2) }}" />
+                            <x-text-input id="superficie_m2" name="superficie_m2" type="number" min="0" class="mt-1 block w-full" :value="old('superficie_m2', $propiedad->superficie_m2)" />
                             <x-input-error :messages="$errors->get('superficie_m2')" class="mt-2" />
                         </div>
 
                         <!-- Ambientes -->
                         <div class="mb-4">
                             <x-input-label for="ambientes" value="Ambientes" />
-                            <x-text-input id="ambientes" name="ambientes" type="number" min="1" required class="mt-1 block w-full" value="{{ old('ambientes', $propiedad->ambientes) }}" />
+                            <x-text-input id="ambientes" name="ambientes" type="number" min="0" class="mt-1 block w-full" :value="old('ambientes', $propiedad->ambientes)" />
                             <x-input-error :messages="$errors->get('ambientes')" class="mt-2" />
                         </div>
 
@@ -93,21 +93,61 @@
                             <x-input-label for="responsable_id" value="Responsable" />
                             <select id="responsable_id" name="responsable_id" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm" required>
                                 @foreach(\App\Models\Usuario::all() as $usuario)
-                                <option value="{{ $usuario->id }}" @selected(old('responsable_id',$propiedad->responsable_id) ==$usuario->id)>
+                                <option value="{{ $usuario->id }}" @selected(old('responsable_id',$propiedad->responsable_id) == $usuario->id)>
                                     {{ $usuario->nombre }}
-                                </potion>
+                                </option> {{-- ← Acá estaba el </potion> --}}
                                 @endforeach
                             </select>
                             <x-input-error :messages="$errors->get('responsable_id')" class="mt-2" />
-                        </div>             
+                        </div>
+
+                        {{-- IMÁGENES ACTUALES --}}
+                       <div class="mb-4" x-data="{ imagenesMarcadas: [] }">
+    <x-input-label value="Imágenes actuales" />
+    <div class="mt-2 grid grid-cols-3 gap-4">
+        @forelse($propiedad->imagenes as $imagen)
+            <div class="relative">
+                <img src="{{ asset('storage/' . $imagen->url_imagen) }}" 
+                     :class="imagenesMarcadas.includes({{ $imagen->id }}) ? 'opacity-30 grayscale' : ''"
+                     class="w-full h-24 object-cover rounded transition">
+                
+                <label class="absolute top-1 right-1 bg-red-600 text-white text-xs px-2 py-1 rounded cursor-pointer hover:bg-red-700">
+                    <input type="checkbox" 
+                           name="imagenes_borrar[]" 
+                           value="{{ $imagen->id }}" 
+                           class="hidden"
+                           @click="imagenesMarcadas.includes({{ $imagen->id }}) 
+                                   ? imagenesMarcadas = imagenesMarcadas.filter(id => id !== {{ $imagen->id }}) 
+                                   : imagenesMarcadas.push({{ $imagen->id }})">
+                    X
+                </label>
+
+                {{-- Badge de "Se borrará" --}}
+                <div x-show="imagenesMarcadas.includes({{ $imagen->id }})" 
+                     x-cloak
+                     class="absolute inset-0 flex items-center justify-center bg-black/60 rounded">
+                    <span class="text-white text-xs font-bold">SE BORRARÁ</span>
+                </div>
+            </div>
+        @empty
+            <p class="text-sm text-gray-500 col-span-3">Sin imágenes cargadas</p>
+        @endforelse
+    </div>
+    <p class="text-xs text-gray-500 mt-1">Tildá la X. La imagen se borrará al hacer clic en ACTUALIZAR.</p>
+</div>
 
 
+                        {{-- SUBIR NUEVAS IMÁGENES --}}
+                        <div class="mb-4">
+                            <x-input-label for="imagenes" value="Agregar nuevas imágenes" />
+                            <input id="imagenes" name="imagenes[]" type="file" multiple accept="image/*"
+                                   class="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:bg-gray-800 file:text-white" />
+                            <x-input-error :messages="$errors->get('imagenes.*')" class="mt-2" />
+                        </div>
 
                         <div class="flex items-center gap-4 mt-6">
                             <x-primary-button>Actualizar</x-primary-button>
-                            <a href="{{ route('propiedades.index') }}">
-                                <x-secondary-button type="button">Cancelar</x-secondary-button>
-                            </a>
+                            <a href="{{ route('propiedades.index') }}" class="text-sm text-gray-600 hover:text-gray-900">Cancelar</a>
                         </div>
                     </form>
                 </div>
