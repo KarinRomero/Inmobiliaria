@@ -11,11 +11,43 @@ use Illuminate\Support\Facades\Storage;
 
 class PropiedadController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $propiedades = Propiedad::with('imagenPrincipal')->latest()->paginate(9);
-        return view('propiedades.index', compact('propiedades'));
-    }
+        $query = Propiedad::with('imagenPrincipal', 'responsable');
+
+        // Filtro por estado
+        if ($request->filled('estado')) {
+           $query->where('estado', $request->estado);
+        }
+
+        // Filtro por tipo
+        if ($request->filled('tipo')) {
+           $query->where('tipo', $request->tipo);
+        }
+
+        // Filtro por precio desde
+        if ($request->filled('precio_desde')) {
+           $query->where('precio', '>=', $request->precio_desde);
+        }
+
+        // Filtro por precio hasta
+        if ($request->filled('precio_hasta')) {
+           $query->where('precio', '<=', $request->precio_hasta);
+        }
+
+        // Buscador por título o dirección
+        if ($request->filled('buscar')) {
+           $buscar = $request->buscar;
+           $query->where(function($q) use ($buscar) {
+              $q->where('nombre_titulo', 'LIKE', "%{$buscar}%")
+              ->orWhere('direccion', 'LIKE', "%{$buscar}%");
+            });
+        }
+
+         $propiedades = $query->latest()->paginate(9)->withQueryString();
+    
+         return view('propiedades.index', compact('propiedades'));
+    } 
 
     public function create()
     {
@@ -60,7 +92,7 @@ class PropiedadController extends Controller
 
     public function show(Propiedad $propiedad)
     {
-        $propiedad->load('imagenes');
+        $propiedad->load('responsable','imagenes');
         return view('propiedades.show', compact('propiedad'));
     }
 
